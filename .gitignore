@@ -1,0 +1,49 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# TypeScript
+*.tsbuildinfo
+
+# Output directories
+dist/
+build/
+
+
+
+# IDE/Editor specific files
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# macOS specific files
+.DS_Store
+
+# Miscellaneous
+.env
+
+/load-balancer/node_modules/
+/load-balancer/dist/
+/load-balancer/.env
+/load-balancer/*.log
+
+/server/node_modules/
+/server/dist/
+/server/.env
+/server/*.log

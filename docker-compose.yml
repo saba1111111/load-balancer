@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  load-balancer:
+    build: ./load-balancer
+    ports:
+      - "${LOAD_BALANCER_SERVER_PORT}:${LOAD_BALANCER_SERVER_PORT}"
+    environment:
+      - PORT=${LOAD_BALANCER_SERVER_PORT}
+      - SERVER_NAME=${LOAD_BALANCER_SERVER_NAME}
+    volumes:
+      - ./load-balancer:/usr/src/app
+
+  server1:
+    build: ./server
+    ports:
+      - "${FIRST_SERVER_PORT}:${FIRST_SERVER_PORT}"
+    environment:
+      - PORT=${FIRST_SERVER_PORT}
+      - SERVER_NAME=${FIRST_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
+
+  server2:
+    build: ./server
+    ports:
+      - "${SECOND_SERVER_PORT}:${SECOND_SERVER_PORT}"
+    environment:
+      - PORT=${SECOND_SERVER_PORT}
+      - SERVER_NAME=${SECOND_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
+
+  server3:
+    build: ./server
+    ports:
+      - "${THIRD_SERVER_PORT}:${THIRD_SERVER_PORT}"
+    environment:
+      - PORT=${THIRD_SERVER_PORT}
+      - SERVER_NAME=${THIRD_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
