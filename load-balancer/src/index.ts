@@ -1,13 +1,31 @@
-import { createServer, IncomingMessage, ServerResponse } from "http";
+import { createServer, IncomingMessage, ServerResponse, request } from "http";
 import dotenv from "dotenv";
-import { ENVS } from "./constants";
+import { ENVS, SERVERS } from "./constants";
 
 dotenv.config();
 
 const server = createServer((req: IncomingMessage, res: ServerResponse) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello, TypeScript with Node.js!");
+  const server = SERVERS[0];
+  const options = {
+    host: server.host,
+    port: server.port,
+    path: req.url,
+    method: req.method,
+    headers: req.headers,
+  };
+
+  const proxy = request(options, (response) => {
+    const statusCode = response.statusCode ?? 500;
+    res.writeHead(statusCode, response.headers);
+    response.pipe(res, { end: true });
+  });
+
+  proxy.on("error", (err) => {
+    res.writeHead(500);
+    res.end("Internal Server Error.");
+  });
+
+  req.pipe(proxy, { end: true });
 });
 
 const PORT = ENVS.LOAD_BALANCER.PORT;

@@ -10,40 +10,40 @@ services:
       - /usr/src/app/node_modules
     env_file:
       - .env
-    # depends_on:
-    #   - server1
-    #   - server2
-    #   - server3
+    depends_on:
+      - first-server
+      - second-server
+      - third-server
 
-  # server1:
-  #   build: ./server
-  #   ports:
-  #     - "${FIRST_SERVER_PORT}:${FIRST_SERVER_PORT}"
-  #   environment:
-  #     - PORT=${FIRST_SERVER_PORT}
-  #     - SERVER_NAME=${FIRST_SERVER_NAME}
-  #   volumes:
-  #     - ./server:/usr/src/app
-  #     - /usr/src/app/node_modules
+  first-server:
+    build: ./server
+    ports:
+      - "${FIRST_SERVER_PORT}:${FIRST_SERVER_PORT}"
+    environment:
+      - PORT=${FIRST_SERVER_PORT}
+      - SERVER_NAME=${FIRST_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
 
-  # server2:
-  #   build: ./server
-  #   ports:
-  #     - "${SECOND_SERVER_PORT}:${SECOND_SERVER_PORT}"
-  #   environment:
-  #     - PORT=${SECOND_SERVER_PORT}
-  #     - SERVER_NAME=${SECOND_SERVER_NAME}
-  #   volumes:
-  #     - ./server:/usr/src/app
-  #     - /usr/src/app/node_modules
+  second-server:
+    build: ./server
+    ports:
+      - "${SECOND_SERVER_PORT}:${SECOND_SERVER_PORT}"
+    environment:
+      - PORT=${SECOND_SERVER_PORT}
+      - SERVER_NAME=${SECOND_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
 
-  # server3:
-  #   build: ./server
-  #   ports:
-  #     - "${THIRD_SERVER_PORT}:${THIRD_SERVER_PORT}"
-  #   environment:
-  #     - PORT=${THIRD_SERVER_PORT}
-  #     - SERVER_NAME=${THIRD_SERVER_NAME}
-  #   volumes:
-  #     - ./server:/usr/src/app
-  #     - /usr/src/app/node_modules
+  third-server:
+    build: ./server
+    ports:
+      - "${THIRD_SERVER_PORT}:${THIRD_SERVER_PORT}"
+    environment:
+      - PORT=${THIRD_SERVER_PORT}
+      - SERVER_NAME=${THIRD_SERVER_NAME}
+    volumes:
+      - ./server:/usr/src/app
+      - /usr/src/app/node_modules
