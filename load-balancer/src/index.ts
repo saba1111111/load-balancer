@@ -1,10 +1,12 @@
-import { createServer, IncomingMessage, ServerResponse, request } from "http";
+import { IncomingMessage, ServerResponse, request } from "http";
 import dotenv from "dotenv";
 import { ENVS, SERVERS } from "./constants";
+import * as https from "https";
+import { getSsLKeys } from "./helpers";
 
 dotenv.config();
 
-const server = createServer((req: IncomingMessage, res: ServerResponse) => {
+const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
   const server = SERVERS[0];
   const options = {
     host: server.host,
@@ -26,7 +28,9 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   });
 
   req.pipe(proxy, { end: true });
-});
+};
+
+const server = https.createServer(getSsLKeys(), requestHandler);
 
 const PORT = ENVS.LOAD_BALANCER.PORT;
 const SERVER_NAME = ENVS.LOAD_BALANCER.SERVER_NAME;

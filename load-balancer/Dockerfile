@@ -7,4 +7,6 @@ RUN npm install
 
 COPY . .
 
+COPY certs /etc/ssl/
+
 CMD ["npm", "run", "start:dev"]
