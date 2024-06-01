@@ -42,6 +42,8 @@ build/
 /load-balancer/dist/
 /load-balancer/.env
 /load-balancer/*.log
+/load-balancer/certs/server.cert
+/load-balancer/certs/server.key
 
 /server/node_modules/
 /server/dist/
