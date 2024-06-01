@@ -10,8 +10,8 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
   res.end("Hello, TypeScript with Node.js!");
 });
 
-const PORT = process.env[ENVS.PORT];
-const SERVER_NAME = process.env[ENVS.SERVER_NAME];
+const PORT = ENVS.LOAD_BALANCER.PORT;
+const SERVER_NAME = ENVS.LOAD_BALANCER.SERVER_NAME;
 server.listen(PORT, () => {
   console.log(`${SERVER_NAME} is running at http://localhost:${PORT}.`);
 });

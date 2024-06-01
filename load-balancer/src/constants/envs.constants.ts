@@ -1,4 +1,18 @@
 export const ENVS = {
-  PORT: "PORT",
-  SERVER_NAME: "SERVER_NAME",
+  LOAD_BALANCER: {
+    PORT: process.env.LOAD_BALANCER_SERVER_PORT,
+    SERVER_NAME: process.env.LOAD_BALANCER_SERVER_NAME,
+  },
+  FIRST_SERVER: {
+    PORT: process.env.FIRST_SERVER_PORT,
+    SERVER_NAME: process.env.FIRST_SERVER_NAME,
+  },
+  SECOND_SERVER: {
+    PORT: process.env.SECOND_SERVER_PORT,
+    SERVER_NAME: process.env.SECOND_SERVER_NAME,
+  },
+  THIRD_SERVER: {
+    PORT: process.env.THIRD_SERVER_PORT,
+    SERVER_NAME: process.env.THIRD_SERVER_NAME,
+  },
 };
