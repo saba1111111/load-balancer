@@ -9,6 +9,10 @@ const server = createServer((req: IncomingMessage, res: ServerResponse) => {
 });
 
 const PORT = process.env.PORT;
+
+server.keepAliveTimeout = 10 * 1000;
+server.timeout = 60 * 1000;
+
 server.listen(PORT, () => {
   console.log(`${SERVER_NAME} is running at http://localhost:${PORT}.`);
 });

@@ -51,6 +51,10 @@ if (cluster.isPrimary) {
   const server = https.createServer(SSL_KEYS, requestHandler);
 
   const PORT = ENVS.LOAD_BALANCER.PORT;
+
+  server.keepAliveTimeout = 10 * 1000;
+  server.timeout = 60 * 1000;
+
   server.listen(PORT, () => {
     console.log(
       `${SERVER_NAME}: Worker ${process.pid} is running at http://localhost:${PORT}.`
