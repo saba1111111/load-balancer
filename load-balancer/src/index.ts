@@ -1,12 +1,14 @@
 import { IncomingMessage, ServerResponse, request } from "http";
 import dotenv from "dotenv";
 import { ENVS, SERVERS } from "./constants";
-import * as https from "https";
-import { getSsLKeys } from "./helpers";
 import cluster from "cluster";
 import os from "os";
+import { CreateHttpsServer } from "./helpers/create-server.helper";
+import { RedisStore } from "./configurations";
 
 dotenv.config();
+
+const centralizedMemoryStore = new RedisStore();
 
 const NUMBER_OF_CPU_CORES = os.cpus().length;
 const SERVER_NAME = ENVS.LOAD_BALANCER.SERVER_NAME;
@@ -47,14 +49,9 @@ if (cluster.isPrimary) {
     req.pipe(proxy, { end: true });
   };
 
-  const SSL_KEYS = getSsLKeys();
-  const server = https.createServer(SSL_KEYS, requestHandler);
+  const server = CreateHttpsServer(requestHandler);
 
   const PORT = ENVS.LOAD_BALANCER.PORT;
-
-  server.keepAliveTimeout = 10 * 1000;
-  server.timeout = 60 * 1000;
-
   server.listen(PORT, () => {
     console.log(
       `${SERVER_NAME}: Worker ${process.pid} is running at http://localhost:${PORT}.`

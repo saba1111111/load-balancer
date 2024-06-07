@@ -15,4 +15,8 @@ export const ENVS = {
     PORT: process.env.THIRD_SERVER_PORT,
     SERVER_NAME: process.env.THIRD_SERVER_NAME,
   },
+  REDIS: {
+    PORT: process.env.REDIS_PORT || 6379,
+    SERVER_NAME: process.env.REDIS_HOST || "localhost",
+  },
 };

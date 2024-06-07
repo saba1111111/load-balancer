@@ -11,9 +11,17 @@ services:
     env_file:
       - .env
     depends_on:
+      - redis
       - first-server
       - second-server
       - third-server
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - redis_data:/data
 
   first-server:
     build: ./server
@@ -47,3 +55,6 @@ services:
     volumes:
       - ./server:/usr/src/app
       - /usr/src/app/node_modules
+
+volumes:
+  redis_data:
