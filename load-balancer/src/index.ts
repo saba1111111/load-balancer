@@ -5,6 +5,7 @@ import cluster from "cluster";
 import os from "os";
 import { CreateHttpsServer } from "./helpers/create-server.helper";
 import { RedisStore } from "./configurations";
+import { keepOnlyHealthServers } from "./helpers";
 
 dotenv.config();
 
@@ -19,6 +20,20 @@ if (cluster.isPrimary) {
   for (let i = 0; i < NUMBER_OF_CPU_CORES; i++) {
     cluster.fork();
   }
+
+  (async () => {
+    await keepOnlyHealthServers({
+      memoryStore: centralizedMemoryStore,
+      servers: SERVERS,
+    });
+
+    setInterval(async () => {
+      await keepOnlyHealthServers({
+        memoryStore: centralizedMemoryStore,
+        servers: SERVERS,
+      });
+    }, 90 * 1000);
+  })();
 
   cluster.on("exit", (worker, code, signal) => {
     console.log(`Worker ${worker.process.pid} died.`);
