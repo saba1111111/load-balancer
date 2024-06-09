@@ -3,9 +3,11 @@ import dotenv from "dotenv";
 import { ENVS, SERVERS } from "./constants";
 import cluster from "cluster";
 import os from "os";
-import { CreateHttpsServer } from "./helpers/create-server.helper";
 import { RedisStore } from "./configurations";
-import { keepOnlyHealthServers } from "./helpers";
+import { handleRequests } from "./helpers/handle-requests.helper";
+import { keepOnlyHealthServers } from "./services/manage-servers.service";
+import { getSsLKeys } from "./helpers";
+import * as https from "https";
 
 dotenv.config();
 
@@ -40,34 +42,17 @@ if (cluster.isPrimary) {
     cluster.fork();
   });
 } else {
-  const requestHandler = (req: IncomingMessage, res: ServerResponse) => {
-    const server = SERVERS[0];
-    const options = {
-      host: server.host,
-      port: server.port,
-      path: req.url,
-      method: req.method,
-      headers: req.headers,
-    };
+  const SSL_KEYS = getSsLKeys();
+  const handleIncomingRequests = (req: IncomingMessage, res: ServerResponse) =>
+    handleRequests({ req, res, memoryStore: centralizedMemoryStore });
 
-    const proxy = request(options, (response) => {
-      const statusCode = response.statusCode ?? 500;
-      res.writeHead(statusCode, response.headers);
-      response.pipe(res, { end: true });
-    });
+  const SERVER = https.createServer(SSL_KEYS, handleIncomingRequests);
 
-    proxy.on("error", (err) => {
-      res.writeHead(500);
-      res.end("Internal Server Error.");
-    });
-
-    req.pipe(proxy, { end: true });
-  };
-
-  const server = CreateHttpsServer(requestHandler);
+  SERVER.keepAliveTimeout = 10 * 1000;
+  SERVER.timeout = 60 * 1000;
 
   const PORT = ENVS.LOAD_BALANCER.PORT;
-  server.listen(PORT, () => {
+  SERVER.listen(PORT, () => {
     console.log(
       `${SERVER_NAME}: Worker ${process.pid} is running at http://localhost:${PORT}.`
     );

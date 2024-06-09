@@ -1,3 +1,3 @@
 export const CacheStaticKeys = {
-  SERVERS: "avaliable-servers",
+  HEALTH_SERVERS_DATA: "health_servers_data",
 };

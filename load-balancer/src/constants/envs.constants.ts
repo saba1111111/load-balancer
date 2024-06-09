@@ -6,14 +6,17 @@ export const ENVS = {
   FIRST_SERVER: {
     PORT: process.env.FIRST_SERVER_PORT,
     SERVER_NAME: process.env.FIRST_SERVER_NAME,
+    SERVER_WEIGH: process.env.FIRST_SERVER_WEIGH,
   },
   SECOND_SERVER: {
     PORT: process.env.SECOND_SERVER_PORT,
     SERVER_NAME: process.env.SECOND_SERVER_NAME,
+    SERVER_WEIGH: process.env.SECOND_SERVER_WEIGH,
   },
   THIRD_SERVER: {
     PORT: process.env.THIRD_SERVER_PORT,
     SERVER_NAME: process.env.THIRD_SERVER_NAME,
+    SERVER_WEIGH: process.env.THIRD_SERVER_WEIGH,
   },
   REDIS: {
     PORT: process.env.REDIS_PORT || 6379,
