@@ -4,10 +4,10 @@ import { ENVS, SERVERS } from "./constants";
 import cluster from "cluster";
 import os from "os";
 import { RedisStore } from "./configurations";
-import { handleRequests } from "./helpers/handle-requests.helper";
 import { keepOnlyHealthServers } from "./services/manage-servers.service";
 import { getSsLKeys } from "./helpers";
 import * as https from "https";
+import { handleRequests } from "./services";
 
 dotenv.config();
 

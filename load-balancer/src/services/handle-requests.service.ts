@@ -1,28 +1,23 @@
-import { IncomingMessage, ServerResponse, request } from "http";
-import { ICentralizedMemoryStore, IServerData } from "../interfaces";
-import { CacheStaticKeys } from "../constants";
+import { request } from "http";
+import { IHandleRequestInput } from "../interfaces";
+import { getNextServer } from "./manage-servers.service";
+import { weighedRoundRobinAlgorithm } from "./load-balancer-state.service";
 
-export async function handleRequests(input: {
-  req: IncomingMessage;
-  res: ServerResponse;
-  memoryStore: ICentralizedMemoryStore;
-}) {
+export async function handleRequests(input: IHandleRequestInput) {
   const { req, res, memoryStore } = input;
 
   try {
-    const healthServers = await memoryStore.get<IServerData[]>(
-      CacheStaticKeys.HEALTH_SERVERS_DATA
-    );
+    const server = await getNextServer({
+      memoryStore,
+      loadBalancingAlgorithm: weighedRoundRobinAlgorithm,
+    });
 
-    if (!healthServers?.length) {
+    if (!server) {
       res.writeHead(500);
       res.end("Internal Server Error: No healthy servers available.");
       console.error("No healthy servers found in memory store.");
       return;
     }
-
-    const randomIndex = Math.floor(Math.random() * healthServers.length);
-    const server = healthServers[randomIndex];
 
     const options = {
       host: server.host,

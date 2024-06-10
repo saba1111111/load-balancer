@@ -2,11 +2,38 @@ import { CacheStaticKeys } from "../constants";
 import {
   ICachedHealthServersData,
   ICachedServerData,
+  IGetNextServerInput,
   IKeepOnlyHealthServersInput,
   IServerData,
 } from "../interfaces";
 import axios, { AxiosResponse } from "axios";
 import { getInitialLoadBalancerState } from "./load-balancer-state.service";
+
+export async function getNextServer(input: IGetNextServerInput) {
+  const { memoryStore, loadBalancingAlgorithm } = input;
+
+  const healthServersData = await memoryStore.get<ICachedHealthServersData>(
+    CacheStaticKeys.HEALTH_SERVERS_DATA
+  );
+
+  if (!healthServersData) {
+    throw new Error("No servers available");
+  }
+
+  const healthServers = healthServersData.healthServers;
+  const loadBalancerState = healthServersData.loadBalancerState;
+
+  const server = loadBalancingAlgorithm(healthServers, loadBalancerState);
+
+  if (server) {
+    await memoryStore.add<ICachedHealthServersData>(
+      CacheStaticKeys.HEALTH_SERVERS_DATA,
+      healthServersData
+    );
+  }
+
+  return server;
+}
 
 export async function keepOnlyHealthServers(
   input: IKeepOnlyHealthServersInput

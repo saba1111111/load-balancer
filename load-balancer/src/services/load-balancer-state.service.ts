@@ -1,10 +1,10 @@
-import { CacheStaticKeys } from "../constants";
 import { calculateGcdOfTwoNumbers } from "../helpers";
 import {
-  ICachedHealthServersData,
-  ICentralizedMemoryStore,
+  ICachedServerData,
+  ILoadBalancerState,
   IServerData,
 } from "../interfaces";
+import { TLoadBalancingAlgorithm } from "../types";
 
 function calculateGcdOfServersWeights(servers: IServerData[]) {
   let result = servers[0].weight;
@@ -20,26 +20,16 @@ export function getInitialLoadBalancerState(servers: IServerData[]) {
 
   return {
     currentServerIndex: -1,
-    currentWeight: maxWeight,
+    currentWeight: 0,
     gcdValue: gcdOfServersWeights,
     maxWeight,
   };
 }
 
-async function getNextServer(input: { memoryStore: ICentralizedMemoryStore }) {
-  const { memoryStore } = input;
-
-  const healthServersData = await memoryStore.get<ICachedHealthServersData>(
-    CacheStaticKeys.HEALTH_SERVERS_DATA
-  );
-
-  if (!healthServersData) {
-    throw new Error("No servers available");
-  }
-
-  const healthServers = healthServersData.healthServers;
-  const loadBalancerState = healthServersData.loadBalancerState;
-
+export const weighedRoundRobinAlgorithm: TLoadBalancingAlgorithm = (
+  healthServers: ICachedServerData[],
+  loadBalancerState: ILoadBalancerState
+) => {
   while (true) {
     loadBalancerState.currentServerIndex =
       (loadBalancerState.currentServerIndex + 1) % healthServers.length;
@@ -59,13 +49,9 @@ async function getNextServer(input: { memoryStore: ICentralizedMemoryStore }) {
 
     if (
       healthServers[loadBalancerState.currentServerIndex].weight >=
-      loadBalancerState.maxWeight
+      loadBalancerState.currentWeight
     ) {
-      memoryStore.add<ICachedHealthServersData>(
-        CacheStaticKeys.HEALTH_SERVERS_DATA,
-        healthServersData
-      );
       return healthServers[loadBalancerState.currentServerIndex];
     }
   }
-}
+};
