@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse, request } from "http";
+import { IncomingMessage, ServerResponse } from "http";
 import dotenv from "dotenv";
 import { ENVS, SERVERS } from "./constants";
 import cluster from "cluster";
