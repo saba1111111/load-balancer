@@ -12,6 +12,23 @@ You need to generate self-signed SSL/TLS certificates for the load balancer to h
    openssl req -x509 -newkey rsa:4096 -keyout certs/server.key -out certs/server.cert -days 365 -nodes -subj "/C=US/ST=State/L=Locality/O=Organization/OU=Unit/CN=localhost"
    ```
 
-2. "Create a .env file in the project directory by copying the content from .env.example."
+2. Create a .env file in the project directory by copying the content from .env.example.
 
 3. Now, you can run the project using docker-compose up.
+
+## Technical part of the project.
+
+- **HTTPS SSL Communication**:
+  - Secures communication between the load balancer server and clients using SSL/TLS certificates.
+- **HTTP Keep-Alive**:
+  - Optimizes server communication performance by keeping connections open, reducing the overhead of establishing new connections for each request.
+- **Weighted Round Robin Load Balancing**:
+  - Distributes requests based on server capacity (weight), Servers with higher weights receive a proportionally higher number of requests, Ensures efficient utilization of server resources.
+- **Health Monitoring**:
+  - Periodically checks the health status of backend servers, Only routes traffic to servers that are confirmed to be healthy.
+- **Node.js Cluster Module**:
+  - Uses the Node.js cluster module to run several instances of the load balancer server, enhancing performance by leveraging multi-core processing capabilities.
+- **Centralized Memory Store with Redis**:
+  - Utilizes Redis as a centralized memory store, ensuring consistent state management across multiple instances of the load balancer.
+- **Docker Compose**:
+  - Uses Docker Compose to run Redis, the load balancer, and multiple instances of test servers, simplifying the deployment and management of the entire environment.
