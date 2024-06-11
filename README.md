@@ -32,3 +32,23 @@ You need to generate self-signed SSL/TLS certificates for the load balancer to h
   - Utilizes Redis as a centralized memory store, ensuring consistent state management across multiple instances of the load balancer.
 - **Docker Compose**:
   - Uses Docker Compose to run Redis, the load balancer, and multiple instances of test servers, simplifying the deployment and management of the entire environment.
+
+## Project Structure
+
+```
+load-balancer/
+   /src
+      /configurations    # Contains configurations, including the centralized memory store configuration for Redis.
+      /constants         # Contains constants and static data for the project.
+      /helpers           # Contains helper functions.
+      /interfaces        # Includes interfaces for data description and abstractions for dependencies.
+      /services
+           |--load-balancer-state/    # Contains business logic for managing the load balancer algorithm state.
+           |--manage-servers/         # Contains business logic for managing, keeping only health servers in the centralized store.
+           |--handle-requests/        # Contains logic for redirecting incoming request to avaliable servers.
+
+   /certs   #  SSL public and private keys.
+
+server/     # Test server, which is run in 3 different copies via Docker Compose.
+
+```
